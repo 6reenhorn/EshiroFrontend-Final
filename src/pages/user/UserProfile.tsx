@@ -22,9 +22,14 @@ const UserProfile: React.FC = () => {
         navigate("/login");
         return;
       }
-
+    
       try {
-        const response = await api.get("/profile/");
+        const response = await api.get("/profile/", {
+          headers: {
+            Authorization: `Bearer ${authToken}`,  // Ensure token is sent
+          },
+        });
+    
         setUserInfo({
           full_name: response.data.full_name || "N/A",
           complete_address: response.data.complete_address || "N/A",
@@ -36,7 +41,7 @@ const UserProfile: React.FC = () => {
         console.error("Error fetching user profile:", error);
         setError("Failed to fetch user profile. Please ensure your profile is set up.");
       }
-    };
+    };    
 
     fetchUserProfile();
   }, [navigate]);
