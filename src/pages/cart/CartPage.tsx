@@ -19,6 +19,7 @@ const CartPage: React.FC<CartPageProps> = ({ cartItems, setCartItems }) => {
     const fetchCart = async () => {
       try {
         const token = localStorage.getItem("token"); // Adjust based on where you store it
+        console.log("Stored Token:", token);
         if (!token) {
           setError("Authentication required. Please log in.");
           return;
