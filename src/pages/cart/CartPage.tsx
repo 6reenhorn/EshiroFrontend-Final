@@ -3,6 +3,15 @@ import { useNavigate } from "react-router-dom";
 import api from "@/api/services/axiosInstance";
 import { CartItem } from "@/hooks/cartTypes"; // Ensure to import the CartItem interface
 
+interface CartApiResponse {
+  id: number;
+  product_id: number;
+  productName: string;
+  price: string;
+  image_Url: string;
+  quantity: number;
+}
+
 interface CartPageProps {
   cartItems: CartItem[];
   setCartItems: React.Dispatch<React.SetStateAction<CartItem[]>>;
@@ -30,7 +39,15 @@ const CartPage: React.FC<CartPageProps> = ({ cartItems, setCartItems }) => {
           },
         });
 
-        setCartItems(response.data);
+        setCartItems(response.data.map((item: CartApiResponse) => ({
+          id: item.id,
+          product_id: item.product_id,
+          productName: item.productName,
+          price: item.price,
+          image_Url: item.image_Url,
+          quantity: item.quantity,
+          isSelected: false
+        })));
       } catch (error) {
         console.error("Error fetching cart:", error);
         setError("Failed to load cart. Please try again.");

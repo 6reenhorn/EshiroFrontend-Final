@@ -98,6 +98,9 @@ const ProductPage: React.FC = () => {
         {
           product_id: product.id,
           quantity: 1,
+          productName: product.name,
+          price: product.price,
+          image_Url: product.image_url
         },
         {
           headers: {
