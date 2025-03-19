@@ -1,10 +1,12 @@
 export interface CartItem {
   id: number;
-  productName: string;
-  price: string;
-  image_Url: string;
+  product_id: number;
+  product: {
+    name: string;
+    price: string;
+    image_url: string;
+  };
   size?: string;
   quantity: number;
   isSelected: boolean;
-  product_id: number; // Add this field to match the backend API response
 }
