@@ -47,23 +47,35 @@ const CheckoutPage: React.FC = () => {
 
   useEffect(() => {
     console.log("Order ID received:", orderId);
-
+  
     if (!orderId) {
       setError("Invalid order ID. Please try again.");
       setLoading(false);
       return;
     }
-
+  
     const fetchData = async () => {
       try {
+        const authToken = localStorage.getItem("authToken"); // Retrieve token
+  
+        if (!authToken) {
+          throw new Error("Missing authentication token. Please log in again.");
+        }
+  
+        const headers = {
+          headers: {
+            Authorization: `Token ${authToken}`, // Include the token
+          },
+        };
+  
         // Fetch User Data
-        const userResponse = await api.get("/profile/");
+        const userResponse = await api.get("/profile/", headers);
         setUser(userResponse.data);
-
+  
         // Fetch Order Items
-        const orderResponse = await api.get(`/order-items/${orderId}/`);
+        const orderResponse = await api.get(`/order-items/${orderId}/`, headers);
         console.log("Order Items:", orderResponse.data);
-
+  
         setOrderItems(
           orderResponse.data.map((item: APIOrderItem) => ({
             id: item.id,
@@ -73,11 +85,11 @@ const CheckoutPage: React.FC = () => {
             quantity: item.quantity,
           }))
         );
-
+  
         // Fetch Order Details
-        const orderDetailsResponse = await api.get(`/orders/${orderId}/`);
+        const orderDetailsResponse = await api.get(`/orders/${orderId}/`, headers);
         setOrderDetails(orderDetailsResponse.data);
-
+  
         setLoading(false);
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
@@ -90,9 +102,9 @@ const CheckoutPage: React.FC = () => {
         setLoading(false);
       }
     };
-
+  
     fetchData();
-  }, [orderId]);
+  }, [orderId]);  
 
   const handlePlaceOrder = () => {
     if (!paymentMethod) {
