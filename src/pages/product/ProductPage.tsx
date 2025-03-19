@@ -86,7 +86,7 @@ const ProductPage: React.FC = () => {
   // Add product to cart
   const handleAddToCart = async (product: Product) => {
     try {
-      const token = localStorage.getItem("token"); // Retrieve stored token
+      const token = localStorage.getItem("authToken"); // Retrieve stored token
   
       if (!token) {
         toast.error("Authorization token is missing.");
