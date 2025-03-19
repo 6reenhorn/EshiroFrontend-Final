@@ -49,12 +49,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
     };
 
     try {
-      // Changed from "token" to "authToken" to match your Wishlist component
-      const token = localStorage.getItem("authToken");
-      
+      const token = localStorage.getItem("token");
       if (!token) {
         toast.error("You need to be logged in to add items to the wishlist.");
-        navigate("/login"); // Optional: redirect to login page
         return;
       }
 
@@ -63,20 +60,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
         { product: id },
         { headers: { Authorization: `Token ${token}` } }
       );
-      
       onAddToWishlist(item);
       setIsWishlisted(true);
       toast.success(`${productName} added to wishlist!`);
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error adding to wishlist:", error);
-
-      if (error.response?.status === 401) {
-        toast.error("Your session has expired. Please log in again.");
-        localStorage.removeItem("authToken"); 
-        navigate("/login"); 
-      } else {
-        toast.error("Failed to add item to wishlist.");
-      }
+      toast.error("Failed to add item to wishlist.");
     }
   };
 
