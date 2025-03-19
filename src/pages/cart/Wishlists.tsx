@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import api from "../../api/services/axiosInstance"; // Import the axios instance
+import api from "../../api/services/axiosInstance"; 
 import type { WishlistItem } from "../../hooks/wishlistTypes";
 
 interface Product {
@@ -23,15 +23,32 @@ const Wishlist: React.FC<WishlistProps> = ({ wishlistItems, setWishlistItems }) 
   useEffect(() => {
     const fetchWishlist = async () => {
       try {
-        const response = await api.get<WishlistItem[]>("/wishlist/");
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+          setError("Please log in.");
+          return;
+        }
+  
+        const response = await api.get<WishlistItem[]>("/wishlist/", {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        });
+  
         setWishlistItems(response.data);
-      } catch {
-        setError("Failed to load wishlist.");
+      } catch (error: any) {
+        if (error.response?.status === 401) {
+          setError("Session expired. Please log in again.");
+          localStorage.removeItem("authToken"); // Clear invalid token
+        } else {
+          console.error("Error fetching wishlist:", error);
+          setError("Failed to load wishlist.");
+        }
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchWishlist();
   }, [setWishlistItems]);
 
@@ -47,10 +64,27 @@ const Wishlist: React.FC<WishlistProps> = ({ wishlistItems, setWishlistItems }) 
 
   const removeFromWishlist = async (id: number) => {
     try {
-      await api.delete(`/wishlist/${id}/`);
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        setError("Authentication required. Please log in.");
+        return;
+      }
+      
+      await api.delete(`/wishlist/${id}/`, {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      });
+      
       setWishlistItems((prevItems) => prevItems.filter((item) => item.id !== id));
-    } catch {
-      setError("Failed to remove item from wishlist.");
+    } catch (error: any) {
+      if (error.response?.status === 401) {
+        setError("Session expired. Please log in again.");
+        localStorage.removeItem("authToken"); 
+      } else {
+        console.error("Error removing item:", error);
+        setError("Failed to remove item from wishlist.");
+      }
     }
   };
 
