@@ -96,11 +96,9 @@ const ProductPage: React.FC = () => {
       const response = await api.post(
         "/cart/",
         {
-          product_id: product.id,
-          quantity: 1,
-          productName: product.name,
-          price: product.price,
-          image_Url: product.image_url
+          product: product.id,  // Changed from product_id to product
+          quantity: 1
+          // Remove the extra fields as they should come from the product relation
         },
         {
           headers: {
@@ -111,15 +109,15 @@ const ProductPage: React.FC = () => {
   
       if (response.status === 201 || response.status === 200) {
         toast.success(`${product.name} added to cart!`);
-        // Update local added status
         setAddedStatus((prev) => ({
           ...prev,
           [product.id]: true
         }));
       }
     } catch (error: any) {
-      if (error.response?.status === 400 && error.response?.data?.detail === "Item already in cart") {
-        toast.info(`${product.name} is already in your cart`);
+      if (error.response?.status === 400) {
+        console.error("API Error response:", error.response.data);
+        toast.error(error.response.data.detail || "Failed to add to cart");
       } else {
         console.error("Error adding product to cart:", error);
         toast.error("Failed to add product to cart. Please try again.");

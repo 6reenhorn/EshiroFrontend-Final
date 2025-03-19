@@ -5,10 +5,12 @@ import { CartItem } from "@/hooks/cartTypes"; // Ensure to import the CartItem i
 
 interface CartApiResponse {
   id: number;
-  product_id: number;
-  productName: string;
-  price: string;
-  image_Url: string;
+  product: {
+    id: number;
+    name: string;
+    price: string;
+    image_url: string;
+  };
   quantity: number;
 }
 
@@ -41,10 +43,10 @@ const CartPage: React.FC<CartPageProps> = ({ cartItems, setCartItems }) => {
 
         setCartItems(response.data.map((item: CartApiResponse) => ({
           id: item.id,
-          product_id: item.product_id,
-          productName: item.productName,
-          price: item.price,
-          image_Url: item.image_Url,
+          product_id: item.product.id,
+          productName: item.product.name,
+          price: item.product.price,
+          image_Url: item.product.image_url,
           quantity: item.quantity,
           isSelected: false
         })));
