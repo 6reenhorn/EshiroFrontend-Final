@@ -49,7 +49,11 @@ const CartPage: React.FC<CartPageProps> = ({ cartItems, setCartItems }) => {
       const newQuantity = Math.max(1, updatedQuantity + (increment ? 1 : -1));
 
       // This now matches your Django URL structure
-      await api.put(`/cart-items/${id}/`, { quantity: newQuantity });
+      await api.put(`/cart-items/${id}/`, { quantity: newQuantity }), {
+        headers: {
+          Authorization: `Token ${localStorage.getItem("authToken")}`, // Ensure the token is stored correctly
+        },
+      };
 
       setCartItems((prevItems) =>
         prevItems.map((item) =>
