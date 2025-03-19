@@ -1,10 +1,8 @@
 export interface CartItem {
   id: number;
-  product: {
-    id: number;
-    name: string;
-    price: string;
-    image_url: string | null;
-  };
+  product_id: number;      // was product.id
+  product_name: string;    // was product.name
+  product_price: string;   // was product.price
+  product_image: string | null; // was product.image_url
   quantity: number;
 }
