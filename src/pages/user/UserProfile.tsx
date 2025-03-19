@@ -26,7 +26,7 @@ const UserProfile: React.FC = () => {
       try {
         const response = await api.get("/profile/", {
           headers: {
-            Authorization: `Bearer ${authToken}`,  // Ensure token is sent
+            Authorization: `Token ${authToken}`,  // Ensure token is sent
           },
         });
     
