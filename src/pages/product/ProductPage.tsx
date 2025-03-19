@@ -94,7 +94,7 @@ const ProductPage: React.FC = () => {
       }
   
       const response = await api.post(
-        "/cart/",
+        "/cart/add/",
         {
           product_id: product.id,
           quantity: 1,
