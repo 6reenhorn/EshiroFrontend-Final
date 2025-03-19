@@ -1,7 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { CartItem } from "../../hooks/cartTypes";
 import api from "@/api/services/axiosInstance";
+
+interface CartItem {
+  id: number;
+  product_id: number;
+  product: {
+    name: string;
+    price: string;
+    image_url: string;
+  };
+  quantity: number;
+}
 
 interface CartPageProps {
   cartItems: CartItem[];
@@ -131,7 +141,7 @@ const CartPage: React.FC<CartPageProps> = ({ cartItems, setCartItems }) => {
 
   const total: number = selectedItems.reduce((acc, id) => {
     const item = cartItems.find((item) => item.id === id);
-    return item ? acc + parseFloat(item.price) * item.quantity : acc;
+    return item ? acc + parseFloat(item.product.price) * item.quantity : acc;
   }, 0);
   
   return (
@@ -163,15 +173,13 @@ const CartPage: React.FC<CartPageProps> = ({ cartItems, setCartItems }) => {
   
                   {/* 🖼 Product Image */}
                   <img
-                    src={item.image_Url && item.image_Url.startsWith("http") 
-                      ? item.image_Url 
-                      : "/fallback-image.png"}
-                    alt={item.productName || "Product Image"}
+                    src={item.product.image_url || "/fallback-image.png"}
+                    alt={item.product.name}
                     className="w-28 h-28 object-cover rounded-lg"
                   />
   
                   {/* 🏷 Product Name */}
-                  <h2 className="text-xl font-semibold text-gray-200">{item.productName}</h2>
+                  <h2 className="text-xl font-semibold text-gray-200">{item.product.name}</h2>
   
                   {/* 🔢 Quantity Selector (Centered) */}
                   <div className="flex items-center justify-center space-x-4">
@@ -194,7 +202,7 @@ const CartPage: React.FC<CartPageProps> = ({ cartItems, setCartItems }) => {
   
                   {/* 💰 Price */}
                   <p className="text-gray-200 font-semibold text-xl w-24 text-center">
-                    ₱{(parseFloat(item.price) * item.quantity).toFixed(2)}
+                    ₱{(parseFloat(item.product.price) * item.quantity).toFixed(2)}
                   </p>
                   
                   {/* ❌ Remove Button */}
