@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import { Heart } from "lucide-react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import api from "../api/services/axiosInstance"; // Import the API instance
-
+import api from "../api/services/axiosInstance"; 
 interface Product {
   id: number;
   category: string;
@@ -49,9 +48,18 @@ const ProductCard: React.FC<ProductCardProps> = ({
     };
 
     try {
-      // No need to handle token manually as it's done in the axios interceptor
-      await api.post("/wishlist/", { product: id });
-      
+      const authToken = localStorage.getItem("token");
+
+      await api.post(
+        "/wishlist/",
+        { product: id },
+        {
+          headers: {
+            Authorization: `Token ${authToken}`,
+          },
+        }
+      );
+
       onAddToWishlist(item);
       setIsWishlisted(true);
       toast.success(`${productName} added to wishlist!`);
@@ -60,7 +68,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
       if (error.response?.status === 401) {
         toast.error("Your session has expired. Please log in again.");
-        localStorage.removeItem("token"); // Clear token using the correct key
+        localStorage.removeItem("token"); 
         navigate("/login");
       } else {
         toast.error("Failed to add item to wishlist.");
