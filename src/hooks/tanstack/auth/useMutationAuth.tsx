@@ -9,9 +9,16 @@ const useMutationAuth = () => {
     return useMutation({
       mutationFn: ({ username, password }: { username: string; password: string }) => login(username, password),
       onSuccess: (response: any) => {
+        console.log("API Response:", response);
+      
+        if (!response || !response.token || !response.user_id) {
+          console.error("Invalid API response", response);
+          return;
+        }
+      
         localStorage.setItem("authToken", response.token);
         localStorage.setItem("user_id", response.user_id.toString());
-        localStorage.setItem("isAuthenticated", "true"); // Ensures App.tsx recognizes login
+        localStorage.setItem("isAuthenticated", "true");
         navigate("/");
       },
       onError: (errors: any) => {
