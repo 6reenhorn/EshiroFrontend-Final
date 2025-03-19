@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "@/api/services/axiosInstance";
-import { CartItem } from "@/hooks/cartTypes"; // Ensure to import the CartItem interface
+import { CartItem } from "@/hooks/cartTypes";
 
 interface CartPageProps {
   cartItems: CartItem[];
@@ -24,6 +24,7 @@ const CartPage: React.FC<CartPageProps> = ({ cartItems, setCartItems }) => {
           return;
         }
 
+        // This endpoint is correct based on your Django URLs
         const response = await api.get("/cart/", {
           headers: {
             Authorization: `Token ${token}`,
@@ -41,13 +42,13 @@ const CartPage: React.FC<CartPageProps> = ({ cartItems, setCartItems }) => {
     fetchCart();
   }, [setCartItems]);
 
-  // Handle quantity change - Fixed API endpoint
+  // Handle quantity change
   const handleQuantityChange = async (id: number, increment: boolean) => {
     try {
       const updatedQuantity = cartItems.find((item) => item.id === id)?.quantity || 1;
       const newQuantity = Math.max(1, updatedQuantity + (increment ? 1 : -1));
 
-      // Fixed endpoint - now using cart-items instead of cart
+      // This now matches your Django URL structure
       await api.put(`/cart-items/${id}/`, { quantity: newQuantity });
 
       setCartItems((prevItems) =>
@@ -70,7 +71,8 @@ const CartPage: React.FC<CartPageProps> = ({ cartItems, setCartItems }) => {
   // Handle remove from cart
   const handleRemove = async (id: number) => {
     try {
-      await api.delete(`/cart/${id}/`);
+      // This now matches your Django URL structure
+      await api.delete(`/cart-items/${id}/`);
 
       setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
       setSelectedItems((prevSelected) => prevSelected.filter((itemId) => itemId !== id));
@@ -123,7 +125,6 @@ const CartPage: React.FC<CartPageProps> = ({ cartItems, setCartItems }) => {
     return item ? acc + parseFloat(item.product_price) * item.quantity : acc;
   }, 0);
 
-  // Inside CartPage component
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 flex flex-col items-center text-white px-6">
       <h1 className="text-4xl font-bold mt-16 mb-10 text-gray-200">🛒 Your Shopping Cart</h1>
@@ -189,8 +190,12 @@ const CartPage: React.FC<CartPageProps> = ({ cartItems, setCartItems }) => {
             <p className="text-gray-200 font-semibold text-2xl">₱{total.toFixed(2)}</p>
             <button 
               onClick={handleCheckout} 
-              className="w-full mt-8 py-4 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition text-lg font-semibold"
               disabled={selectedItems.length === 0}
+              className={`w-full mt-8 py-4 ${
+                selectedItems.length === 0 
+                  ? 'bg-gray-600 cursor-not-allowed' 
+                  : 'bg-indigo-600 hover:bg-indigo-700'
+              } text-white rounded-lg transition text-lg font-semibold`}
             >
               Proceed to Checkout
             </button>
