@@ -47,7 +47,7 @@ const CartPage: React.FC<CartPageProps> = ({ cartItems, setCartItems }) => {
       const updatedQuantity = cartItems.find((item) => item.id === id)?.quantity || 1;
       const newQuantity = Math.max(1, updatedQuantity + (increment ? 1 : -1));
 
-      await api.put(`/cart/${id}/`, { quantity: newQuantity });
+      await api.put(`/cart-items/${id}/`, { quantity: newQuantity });
 
       setCartItems((prevItems) =>
         prevItems.map((item) =>
