@@ -102,7 +102,7 @@ const CartPage: React.FC<CartPageProps> = ({ cartItems, setCartItems }) => {
           if (item) {
             await api.post("/order-items/create/", {
               order_id: orderId,
-              product_id: item.product_id,
+              product_id: item.product.id,
               quantity: item.quantity,
             });
           }
@@ -119,7 +119,7 @@ const CartPage: React.FC<CartPageProps> = ({ cartItems, setCartItems }) => {
 
   const total: number = selectedItems.reduce((acc, id) => {
     const item = cartItems.find((item) => item.id === id);
-    return item ? acc + parseFloat(item.price) * item.quantity : acc;
+    return item ? acc + parseFloat(item.product.price) * item.quantity : acc;
   }, 0);
 
   return (
@@ -146,11 +146,11 @@ const CartPage: React.FC<CartPageProps> = ({ cartItems, setCartItems }) => {
                     className="w-6 h-6 text-indigo-500 bg-gray-800 border-gray-600 rounded focus:ring-indigo-500"
                   />
                   <img
-                    src={item.image_Url || "/fallback-image.png"}
-                    alt={item.productName}
+                    src={item.product.image_url || "/fallback-image.png"}
+                    alt={item.product.name}
                     className="w-28 h-28 object-cover rounded-lg"
                   />
-                  <h2 className="text-xl font-semibold text-gray-200">{item.productName}</h2>
+                  <h2 className="text-xl font-semibold text-gray-200">{item.product.name}</h2>
                   <div className="flex items-center justify-center space-x-4">
                     <button 
                       onClick={() => handleQuantityChange(item.id, false)} 
@@ -169,7 +169,7 @@ const CartPage: React.FC<CartPageProps> = ({ cartItems, setCartItems }) => {
                     </button>
                   </div>
                   <p className="text-gray-200 font-semibold text-xl w-24 text-center">
-                    ₱{(parseFloat(item.price) * item.quantity).toFixed(2)}
+                    ₱{(parseFloat(item.product.price) * item.quantity).toFixed(2)}
                   </p>
                   <button onClick={() => handleRemove(item.id)} className="text-red-400 hover:text-red-500 text-3xl">
                     ×
