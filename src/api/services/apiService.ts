@@ -33,7 +33,7 @@ export const fetchWishlistItems = async (userId: number) => {
 // User Login
 export const login = async (username: string, password: string) => {
   const response = await axiosInstance.post("/login/", { username, password });
-  return response.data.token;
+  return response.data; // ✅ Return full API response
 };
 
 // User Signup

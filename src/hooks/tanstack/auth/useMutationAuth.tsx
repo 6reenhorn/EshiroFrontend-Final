@@ -9,7 +9,7 @@ const useMutationAuth = () => {
     return useMutation({
       mutationFn: ({ username, password }: { username: string; password: string }) => login(username, password),
       onSuccess: (response: any) => {
-        console.log("API Response:", response);
+        console.log("API Response:", response); // Debugging
       
         if (!response || !response.token || !response.user_id) {
           console.error("Invalid API response", response);
