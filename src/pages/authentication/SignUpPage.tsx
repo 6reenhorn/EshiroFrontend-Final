@@ -47,9 +47,15 @@ const SignUpPage: React.FC = () => {
       <div className="hidden md:flex items-center justify-center md:w-1/2 lg:w-2/5 min-h-[300px]">
         <div className="w-[250px] h-[250px] flex items-center justify-center"
         onClick={() => navigate("/")} 
-        style={{ cursor: "pointer" }} 
-       >
-
+        style={{ 
+          cursor: "pointer" }}
+          onMouseEnter={(e) => {
+            (e.target as HTMLDivElement).style.transform = "scale(1.03)";
+          }}
+          onMouseLeave={(e) => {
+            (e.target as HTMLDivElement).style.transform = "scale(1)";
+          }}
+       >      
           {/* Logo hehe*/}
           <div className="logo-wrapper">
             <div className="logo-face front">
