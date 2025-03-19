@@ -30,28 +30,7 @@ const CartPage: React.FC<CartPageProps> = ({ cartItems, setCartItems }) => {
           },
         });
 
-        // Log the response to see the structure
-        console.log("Cart Response:", response.data);
-
-        // Handle empty cart message from backend
-        if (response.data.message === "Your cart is empty") {
-          setCartItems([]);
-          return;
-        }
-
-        // Transform the data to match our CartItem interface
-        const transformedItems = response.data.map((item: any) => ({
-          id: item.id,
-          product: {
-            id: item.product.id,
-            name: item.product.name,
-            price: item.product.price.toString(),
-            image_url: item.product.image_url || ''
-          },
-          quantity: item.quantity
-        }));
-
-        setCartItems(transformedItems);
+        setCartItems(response.data);
       } catch (error) {
         console.error("Error fetching cart:", error);
         setError("Failed to load cart. Please try again.");
@@ -167,13 +146,11 @@ const CartPage: React.FC<CartPageProps> = ({ cartItems, setCartItems }) => {
                     className="w-6 h-6 text-indigo-500 bg-gray-800 border-gray-600 rounded focus:ring-indigo-500"
                   />
                   <img
-                    src={item.product?.image_url || "/fallback-image.png"}
-                    alt={item.product?.name || "Product"}
+                    src={item.product.image_url || "/fallback-image.png"}
+                    alt={item.product.name}
                     className="w-28 h-28 object-cover rounded-lg"
                   />
-                  <h2 className="text-xl font-semibold text-gray-200">
-                    {item.product?.name || "Unknown Product"}
-                  </h2>
+                  <h2 className="text-xl font-semibold text-gray-200">{item.product.name}</h2>
                   <div className="flex items-center justify-center space-x-4">
                     <button 
                       onClick={() => handleQuantityChange(item.id, false)} 
