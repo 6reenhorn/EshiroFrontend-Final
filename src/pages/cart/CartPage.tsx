@@ -163,8 +163,10 @@ const CartPage: React.FC<CartPageProps> = ({ cartItems, setCartItems }) => {
   
                   {/* 🖼 Product Image */}
                   <img
-                    src={item.image_Url.startsWith("http") ? item.image_Url : "/fallback-image.png"}
-                    alt={item.productName}
+                    src={item.image_Url && typeof item.image_Url === "string" && item.image_Url.startsWith("http") 
+                      ? item.image_Url 
+                      : "/fallback-image.png"}
+                    alt={item.productName || "Product Image"}
                     className="w-28 h-28 object-cover rounded-lg"
                   />
   
