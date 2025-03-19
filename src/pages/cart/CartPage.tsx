@@ -93,16 +93,24 @@ const CartPage: React.FC<CartPageProps> = ({ cartItems, setCartItems }) => {
   const handleCheckout = async () => {
     try {
       const userId = localStorage.getItem("user_id");
+      const authToken = localStorage.getItem("authToken"); // Get the token
 
-      if (!userId) {
+      if (!userId || !authToken) {
         alert("Missing authentication details.");
         return;
       }
 
-      const orderResponse = await api.post("/orders/", {
-        user_id: userId,
-        total_price: total,
-      });
+      const headers = {
+        headers: {
+          Authorization: `Token ${authToken}`, // Include the token
+        },
+      };
+
+      const orderResponse = await api.post(
+        "/orders/",
+        { user_id: userId, total_price: total },
+        headers // Pass headers here
+      );
 
       const orderId = orderResponse.data.id;
       navigate("/checkout", { state: { orderId } });
@@ -111,11 +119,11 @@ const CartPage: React.FC<CartPageProps> = ({ cartItems, setCartItems }) => {
         selectedItems.map(async (cartItemId) => {
           const item = cartItems.find((item) => item.id === cartItemId);
           if (item) {
-            await api.post("/order-items/create/", {
-              order_id: orderId,
-              product_id: item.product_id,
-              quantity: item.quantity,
-            });
+            await api.post(
+              "/order-items/create/",
+              { order_id: orderId, product_id: item.product_id, quantity: item.quantity },
+              headers // Pass headers here too
+            );
           }
         })
       );
