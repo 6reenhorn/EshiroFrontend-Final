@@ -86,11 +86,26 @@ const ProductPage: React.FC = () => {
   // Add product to cart
   const handleAddToCart = async (product: Product) => {
     try {
-      const response = await api.post("/cart/", {
-        product_id: product.id,
-        quantity: 1,
-      });
-
+      const token = localStorage.getItem("token"); // Retrieve stored token
+  
+      if (!token) {
+        toast.error("Authorization token is missing.");
+        return;
+      }
+  
+      const response = await api.post(
+        "/cart/",
+        {
+          product_id: product.id,
+          quantity: 1,
+        },
+        {
+          headers: {
+            Authorization: `Token ${token}`, // Include token in headers
+          },
+        }
+      );
+  
       if (response.status === 201 || response.status === 200) {
         toast.success(`${product.name} added to cart!`);
       } else {
@@ -101,7 +116,7 @@ const ProductPage: React.FC = () => {
       toast.error("Error adding product to cart. Please try again.");
     }
   };
-
+  
   // Fallback for loading or no products
   if (loading) {
     return <p className="text-center text-white">Loading products...</p>;
