@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "@/api/services/axiosInstance";
-import { CartItem } from "@/hooks/cartTypes";
+import { CartItem } from "@/types/cartTypes";
 
 interface CartPageProps {
   cartItems: CartItem[];

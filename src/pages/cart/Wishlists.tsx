@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import api from "../../api/services/axiosInstance"; 
-import type { WishlistItem } from "../../hooks/wishlistTypes";
+import type { WishlistItem } from "../../types/wishlistTypes";
 
 interface Product {
   id: number;

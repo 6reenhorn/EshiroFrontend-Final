@@ -10,8 +10,8 @@ import SignUpPage from "../pages/authentication/SignUpPage";
 import UserProfile from "../pages/user/UserProfile";
 import WhatsNew from "../pages/product/WhatsNew";
 import CheckoutPage from "../pages/cart/CheckoutPage";
-import type { CartItem } from "../hooks/cartTypes";
-import type { WishlistItem } from "../hooks/wishlistTypes";
+import type { CartItem } from "../types/cartTypes";
+import type { WishlistItem } from "../types/wishlistTypes";
 
 interface AppRoutesProps {
   cartItems: CartItem[];

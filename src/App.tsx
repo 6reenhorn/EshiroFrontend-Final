@@ -6,8 +6,8 @@ import Footer from "./components/common/Footer";
 import AppRoutes, { shouldHideNavbar } from "./routes/AppRoutes";
 import "./index.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import type { CartItem } from "./hooks/cartTypes";
-import type { WishlistItem } from "./hooks/wishlistTypes";
+import type { CartItem } from "./types/cartTypes";
+import type { WishlistItem } from "./types/wishlistTypes";
 
 const queryClient = new QueryClient();
 

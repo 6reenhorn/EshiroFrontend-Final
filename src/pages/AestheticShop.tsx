@@ -14,8 +14,8 @@ import CheckoutPage from "./cart/CheckoutPage";
 import Wishlist from "./cart/Wishlists";
 import { fetchProducts } from "../api/services/apiService"; // Import API call function
 import ProductPage from "./product/ProductPage";
-import { WishlistItem } from "../hooks/wishlistTypes"; // Adjust the path accordingly
-import { CartItem } from "../hooks/cartTypes";
+import { WishlistItem } from "../types/wishlistTypes"; // Adjust the path accordingly
+import { CartItem } from "../types/cartTypes";
 
 
 // Product interface
