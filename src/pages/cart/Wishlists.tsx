@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../../api/services/axiosInstance"; // Import the axios instance
 import type { WishlistItem } from "../../hooks/wishlistTypes";
+
 interface Product {
   id: number;
   name: string;
@@ -8,7 +9,6 @@ interface Product {
   image_url: string;
   description: string;
 }
-
 
 interface WishlistProps {
   wishlistItems: WishlistItem[];
@@ -23,21 +23,11 @@ const Wishlist: React.FC<WishlistProps> = ({ wishlistItems, setWishlistItems }) 
   useEffect(() => {
     const fetchWishlist = async () => {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          setError("Unauthorized: No token found.");
-          setLoading(false);
-          return;
-        }
-
-        const response = await axios.get<WishlistItem[]>("http://127.0.0.1:8000/api/wishlist/", {
-          headers: { Authorization: `Token ${token}` },
-        });
-
+        const response = await api.get<WishlistItem[]>("/wishlist/");
         setWishlistItems(response.data);
-        setLoading(false);
       } catch {
         setError("Failed to load wishlist.");
+      } finally {
         setLoading(false);
       }
     };
@@ -57,16 +47,8 @@ const Wishlist: React.FC<WishlistProps> = ({ wishlistItems, setWishlistItems }) 
 
   const removeFromWishlist = async (id: number) => {
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        setError("Unauthorized: No token found.");
-        return;
-      }
-      await axios.delete(`http://127.0.0.1:8000/api/wishlist/${id}/`, {
-        headers: { Authorization: `Token ${token}` },
-      });
-      const updatedWishlist = wishlistItems.filter((item) => item.id !== id);
-      setWishlistItems(updatedWishlist);
+      await api.delete(`/wishlist/${id}/`);
+      setWishlistItems((prevItems) => prevItems.filter((item) => item.id !== id));
     } catch {
       setError("Failed to remove item from wishlist.");
     }
