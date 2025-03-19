@@ -18,29 +18,20 @@ const CartPage: React.FC<CartPageProps> = ({ cartItems, setCartItems }) => {
   useEffect(() => {
     const fetchCart = async () => {
       try {
-        const response = await api.get("/cart/");
+        const token = localStorage.getItem("token"); // Adjust based on where you store it
+        if (!token) {
+          setError("Authentication required. Please log in.");
+          return;
+        }
+    
+        const response = await api.get("/cart/", {
+          headers: {
+            Authorization: `Token ${token}`, // If using JWT
+          },
+        });
+    
         console.log("Cart API Response:", response.data);
-
-        const formattedCartItems = response.data.map((item: { 
-          id: number; 
-          product_name: string; 
-          product_price: string; 
-          product_image: string; 
-          product_id: number; // Ensure this field is included
-          size?: string;
-          quantity: number; 
-        }) => ({
-          id: item.id,
-          productName: item.product_name,  
-          price: item.product_price,  
-          image_Url: item.product_image || "/fallback-image.png",
-          size: item.size,
-          quantity: item.quantity,
-          isSelected: false,
-          product_id: item.product_id, 
-        }));
-
-        setCartItems(formattedCartItems);
+        setCartItems(response.data);
       } catch (error) {
         console.error("Error fetching cart:", error);
         setError("Failed to load cart. Please try again.");
