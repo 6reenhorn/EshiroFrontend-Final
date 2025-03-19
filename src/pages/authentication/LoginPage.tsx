@@ -37,7 +37,12 @@ const LoginPage: React.FC = () => {
     <div className="flex flex-col md:flex-row items-center justify-center min-h-screen bg-gradient-to-r from-black via-gray-900 to-gray-700 p-4">
       {/* Logo Section (Hidden on Small Screens) */}
       <div className="hidden md:flex items-center justify-center md:w-1/2 lg:w-2/5 min-h-[300px]">
-        <div className="w-[250px] h-[250px] flex items-center justify-center">
+        <div className="w-[250px] h-[250px] flex items-center justify-center"
+        onClick={() => navigate("/")}
+        style={{ cursor: "pointer" }}
+        >
+
+          {/* Logo hehe*/}
           <div className="logo-wrapper">
             <div className="logo-face front">
               <img src="https://i.imghippo.com/files/chP3718kF.png" alt="" className="logo-image" />
