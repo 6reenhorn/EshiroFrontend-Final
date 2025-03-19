@@ -28,7 +28,7 @@ const ProductPage: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [wishlist] = useState<number[]>([]);
   const [loading, setLoading] = useState(true);
-  const [addedStatus] = useState<Record<string, boolean>>({}); // Track each product's added status to cart
+  const [addedStatus, setAddedStatus] = useState<Record<number, boolean>>({}); // Track each product's added status to cart
   const [wishlistStatus, setWishlistStatus] = useState<Record<string, boolean>>({}); // Track each product's wishlist status
   const [wishlistItems, setWishlistItems] = useState<CartItem[]>([]); // Define type for wishlistItems
 
@@ -86,10 +86,10 @@ const ProductPage: React.FC = () => {
   // Add product to cart
   const handleAddToCart = async (product: Product) => {
     try {
-      const token = localStorage.getItem("authToken"); // Retrieve stored token
+      const token = localStorage.getItem("authToken");
   
       if (!token) {
-        toast.error("Authorization token is missing.");
+        toast.error("Please login to add items to cart");
         return;
       }
   
@@ -101,19 +101,26 @@ const ProductPage: React.FC = () => {
         },
         {
           headers: {
-            Authorization: `Token ${token}`, // Include token in headers
+            Authorization: `Token ${token}`,
           },
         }
       );
   
       if (response.status === 201 || response.status === 200) {
         toast.success(`${product.name} added to cart!`);
-      } else {
-        toast.error("Failed to add product to cart.");
+        // Update local added status
+        setAddedStatus((prev) => ({
+          ...prev,
+          [product.id]: true
+        }));
       }
-    } catch (error) {
-      console.error("Error adding product to cart:", error);
-      toast.error("Error adding product to cart. Please try again.");
+    } catch (error: any) {
+      if (error.response?.status === 400 && error.response?.data?.detail === "Item already in cart") {
+        toast.info(`${product.name} is already in your cart`);
+      } else {
+        console.error("Error adding product to cart:", error);
+        toast.error("Failed to add product to cart. Please try again.");
+      }
     }
   };
   
@@ -183,15 +190,15 @@ const ProductPage: React.FC = () => {
               {/* Add to Cart Button */}
               <button
                 className={`mt-4 w-full ${
-                  addedStatus[product.name]
+                  addedStatus[product.id]
                     ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                     : "bg-white text-black hover:bg-gray-300"
                 } text-sm py-2 rounded-full`}
                 onClick={() => handleAddToCart(product)}
-                disabled={addedStatus[product.name]}
+                disabled={addedStatus[product.id]}
               >
                 <ShoppingCart size={16} className="mr-1 inline" />
-                {addedStatus[product.name] ? "Added" : "Add to Cart"}
+                {addedStatus[product.id] ? "Added" : "Add to Cart"}
               </button>
           </div>
         ))}
