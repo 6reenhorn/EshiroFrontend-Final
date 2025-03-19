@@ -87,14 +87,15 @@ const ProductPage: React.FC = () => {
   const handleAddToCart = async (product: Product) => {
     try {
       const token = localStorage.getItem("authToken");
-  
+    
       if (!token) {
         toast.error("Please login to add items to cart");
         return;
       }
-  
+    
+      // Change the endpoint from /cart/ to /cart/add/
       const response = await api.post(
-        "/cart/",
+        "/cart/add/",
         {
           product_id: product.id,
           quantity: 1,
@@ -105,20 +106,22 @@ const ProductPage: React.FC = () => {
           },
         }
       );
-  
+    
       if (response.status === 201 || response.status === 200) {
         toast.success(`${product.name} added to cart!`);
-        // Update local added status
         setAddedStatus((prev) => ({
           ...prev,
           [product.id]: true
         }));
       }
     } catch (error: any) {
-      if (error.response?.status === 400 && error.response?.data?.detail === "Item already in cart") {
-        toast.info(`${product.name} is already in your cart`);
+      console.error("Error adding product to cart:", error);
+      
+      // Better error handling
+      if (error.response?.status === 400) {
+        const errorMsg = error.response?.data?.error || "Failed to add to cart";
+        toast.error(errorMsg);
       } else {
-        console.error("Error adding product to cart:", error);
         toast.error("Failed to add product to cart. Please try again.");
       }
     }
