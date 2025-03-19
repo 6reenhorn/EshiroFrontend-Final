@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useCallback, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 
+//nice
+
 interface Product {
   id: number;
   name: string;
