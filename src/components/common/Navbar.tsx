@@ -73,7 +73,7 @@ const Navbar: React.FC = () => {
             alt="Éshiro Flex"
             className="h-8"
           />
-          <Link to="/" className="text-2xl font-roboto text-white ml-2">
+          <Link to="/" className="text-2xl font-roboto text-white ml-2 hover:text-blue-500 transition duration-300 transform hover:scale-105">
             Éshiro Flex
           </Link>
         </div>
