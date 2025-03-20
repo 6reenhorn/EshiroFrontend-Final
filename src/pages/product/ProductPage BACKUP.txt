@@ -1,77 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Heart, ShoppingCart } from "lucide-react";
-import { useProduct, useCart } from "@/hooks/useProductHooks";
-import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
-import api from "../../api/services/axiosInstance";
+import { useProduct, useWishlist, useCart } from "@/hooks/useProductHooks";
 
 const ProductPage: React.FC = () => {
   const { products, loading } = useProduct();
+  const { wishlistStatus, handleAddToWishlist } = useWishlist();
   const { addedStatus, handleAddToCart } = useCart();
-  const [wishlistStatus, setWishlistStatus] = useState<{ [key: number]: boolean }>({});
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchWishlistStatus = async () => {
-      try {
-        const authToken = localStorage.getItem("authToken");
-        if (!authToken) return;
-
-        const response = await api.get("/wishlist/", {
-          headers: {
-            Authorization: `Token ${authToken}`,
-          },
-        });
-
-        if (response.data && Array.isArray(response.data)) {
-          const status = response.data.reduce((acc: any, item: any) => {
-            acc[item.product?.id || item.product] = true;
-            return acc;
-          }, {});
-          setWishlistStatus(status);
-        }
-      } catch (error) {
-        console.error("Error fetching wishlist status:", error);
-      }
-    };
-
-    fetchWishlistStatus();
-  }, []);
-
-  const handleAddToWishlist = async (product: any) => {
-    const authToken = localStorage.getItem("authToken");
-    if (!authToken) {
-      toast.error("Please log in to manage your wishlist");
-      navigate("/login");
-      return;
-    }
-
-    try {
-      await api.post(
-        "/wishlist/",
-        { product: product.id },
-        {
-          headers: {
-            Authorization: `Token ${authToken}`,
-          },
-        }
-      );
-      setWishlistStatus((prevState) => ({
-        ...prevState,
-        [product.id]: true,
-      }));
-      toast.success(`${product.name} added to wishlist!`);
-    } catch (error: any) {
-      console.error("Error adding to wishlist:", error);
-      if (error.response?.status === 401) {
-        toast.error("Your session has expired. Please log in again.");
-        localStorage.removeItem("authToken");
-        navigate("/login");
-      } else {
-        toast.error("Failed to add item to wishlist.");
-      }
-    }
-  };
 
   if (loading) {
     return <p className="text-center text-white">Loading products...</p>;
@@ -92,13 +26,13 @@ const ProductPage: React.FC = () => {
             <div className="absolute top-3 right-3">
               <button
                 className={`p-1 ${
-                  wishlistStatus[product.id]
+                  wishlistStatus[product.name]
                     ? "text-red-500"
                     : "text-gray-300"
                 } bg-gray-800 rounded-full hover:text-red-400`}
                 onClick={() => handleAddToWishlist(product)}
               >
-                <Heart size={18} fill={wishlistStatus[product.id] ? "currentColor" : "none"} />
+                <Heart size={18} />
               </button>
             </div>
             <img
