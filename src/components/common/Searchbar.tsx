@@ -22,13 +22,13 @@ const SearchBar: React.FC<SearchBarProps> = ({ isVisible, onClose }) => {
   const [error, setError] = useState<string | null>(null);
 
   // Debounce function to optimize API calls
-  const debounce = (func: Function, delay: number) => {
+  const debounce = useCallback((func: Function, delay: number) => {
     let timeout: NodeJS.Timeout;
     return (...args: any) => {
       clearTimeout(timeout);
       timeout = setTimeout(() => func(...args), delay);
     };
-  };
+  }, []);
 
   // Fetch products dynamically based on search input
   const fetchProducts = async (searchTerm: string) => {
@@ -57,11 +57,19 @@ const SearchBar: React.FC<SearchBarProps> = ({ isVisible, onClose }) => {
   };
 
   // Debounced version of fetchProducts
-  const handleSearchChange = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
+  const debouncedFetchProducts = useCallback(
+    debounce((value: string) => {
+      fetchProducts(value);
+    }, 300),
+    [debounce]
+  );
+
+  // Handle search input change
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setQuery(value);
-    fetchProducts(value);
-  }, 300); // 300ms debounce delay
+    debouncedFetchProducts(value);
+  };
 
   // Handle clicking outside the search bar to close it
   const handleClickOutside = useCallback(
