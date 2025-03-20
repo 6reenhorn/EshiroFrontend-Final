@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Heart, ShoppingCart } from "lucide-react";
 import { useProduct, useCart } from "@/hooks/useProductHooks";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import api from "../../api/services/axiosInstance";
 
@@ -41,7 +42,7 @@ const ProductPage: React.FC = () => {
   const handleAddToWishlist = async (product: any) => {
     const authToken = localStorage.getItem("authToken");
     if (!authToken) {
-      toast.error("Please log in to manage your wishlist");
+      toast.error("Please log in to manage your wishlist", { theme: "dark" });
       navigate("/login");
       return;
     }
@@ -60,15 +61,15 @@ const ProductPage: React.FC = () => {
         ...prevState,
         [product.id]: true,
       }));
-      toast.success(`${product.name} added to wishlist!`);
+      toast.success(`${product.name} added to wishlist!`, { theme: "dark" });
     } catch (error: any) {
       console.error("Error adding to wishlist:", error);
       if (error.response?.status === 401) {
-        toast.error("Your session has expired. Please log in again.");
+        toast.error("Your session has expired. Please log in again.", { theme: "dark" });
         localStorage.removeItem("authToken");
         navigate("/login");
       } else {
-        toast.error("Failed to add item to wishlist.");
+        toast.error("Failed to add item to wishlist.", { theme: "dark" });
       }
     }
   };
@@ -139,6 +140,9 @@ const ProductPage: React.FC = () => {
           </div>
         ))}
       </div>
+
+      {/* Global toast container with dark theme */}
+      <ToastContainer theme="dark" />
     </div>
   );
 };
