@@ -1,4 +1,3 @@
-// hooks/useLoginForm.ts
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { LoginFormState } from "../types/auth";
@@ -14,12 +13,11 @@ export const useLoginForm = () => {
   const navigate = useNavigate();
   const { useMutationLogin } = useMutationAuth();
   const { mutate } = useMutationLogin();
-  
-  // Check if user is already logged in
+
   useEffect(() => {
     const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
     if (isAuthenticated) {
-      navigate("/"); // Redirect to home page
+      navigate("/");
     }
   }, [navigate]);
   
@@ -31,8 +29,7 @@ export const useLoginForm = () => {
       [id]: value
     }));
   };
-  
-  // Handle form submission
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormState(prev => ({ ...prev, error: null }));
@@ -43,8 +40,7 @@ export const useLoginForm = () => {
       setFormState(prev => ({ ...prev, error: "Please enter both username and password" }));
       return;
     }
-    
-    // Submit credentials to authentication service
+
     mutate({ username, password });
   };
   
