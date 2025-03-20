@@ -98,8 +98,8 @@ const SearchBar: React.FC<SearchBarProps> = ({ isVisible, onClose }) => {
   return (
     <div
       ref={searchRef}
-      className="fixed top-3 left-1/2 transform -translate-x-1/2 w-2/3 sm:w-1/3 
-                 bg-white/10 backdrop-blur-lg shadow-2xl rounded-xl flex flex-col px-3 py-2 
+      className="fixed top-1.5 left-1/2 transform -translate-x-1/2 w-2/3 sm:w-1/3 
+                 bg-white/10 backdrop-blur-lg shadow-2xl rounded-xl flex flex-col px-3 py-1.5
                  border border-white/20 z-50 overflow-hidden"
     >
       <div className="flex items-center w-full relative">

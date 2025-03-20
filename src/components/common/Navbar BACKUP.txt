@@ -5,35 +5,42 @@ import { Link, useLocation } from "react-router-dom";
 import SearchBar from "./Searchbar";
 
 const Navbar: React.FC = () => {
-  const location = useLocation(); 
-  const isCategoryPage = location.pathname.startsWith("/category");
+  const location = useLocation(); // Get the current route
+  const isCategoryPage = location.pathname.startsWith("/category"); // Check if on a category page
 
   const [isHeaderVisible] = useState(false);
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  // Helper functions to show/hide header
+
   useEffect(() => {
     const checkAuth = () => {
       const storedToken = localStorage.getItem("authToken");
+      console.log("Stored Token:", storedToken); // Debugging line
 
       try {
         let parsedToken = null;
 
+        // Handle cases where authToken is stored either as JSON or a plain string
         if (storedToken) {
           parsedToken =
             storedToken.startsWith("{")
-              ? JSON.parse(storedToken)
-              : { token: storedToken };
+              ? JSON.parse(storedToken) // Parse if it's JSON
+              : { token: storedToken }; // Treat as plain token if not JSON
         }
 
-        setIsAuthenticated(!!parsedToken?.token);
-      } catch {
+        console.log("Parsed Token:", parsedToken); // Debugging line
+        setIsAuthenticated(!!parsedToken?.token); // Set authentication state based on presence of a token
+      } catch (error) {
+        console.error("Error parsing authToken:", error);
         setIsAuthenticated(false);
       }
     };
 
     checkAuth();
 
+    // Listen for changes to localStorage in other tabs/windows
     window.addEventListener("storage", checkAuth);
 
     return () => {
@@ -41,8 +48,15 @@ const Navbar: React.FC = () => {
     };
   }, [location]);
 
+  // Log authentication state changes
+  useEffect(() => {
+    console.log("Auth state changed:", isAuthenticated); // Debugging: See if state updates
+  }, [isAuthenticated]);
+
   return (
-    <div>
+    <div
+     
+    >
       {/* Header */}
       <Header isVisible={isHeaderVisible} />
       <nav
@@ -59,71 +73,41 @@ const Navbar: React.FC = () => {
             alt="Éshiro Flex"
             className="h-8"
           />
-          <Link
-            to="/"
-            className="text-2xl font-roboto text-white ml-2 hover:text-blue-500 transition duration-300 transform hover:scale-105"
-          >
+          <Link to="/" className="text-2xl font-roboto text-white ml-2 hover:text-blue-500 transition duration-300 transform hover:scale-105">
             Éshiro Flex
           </Link>
         </div>
 
         {/* Right Section (Icons) */}
         <ul className="flex space-x-6 mr-4 md:mr-20">
+          {/* Search Button */}
           <li>
-            <button
-              onClick={() => setIsSearchVisible(true)}
-              className={`${
-                isSearchVisible ? "text-white" : "text-white"
-              }`}
-              aria-label="Open Search Bar"
-            >
-              <FiSearch size={20} />
+            <button onClick={() => setIsSearchVisible(true)} aria-label="Open Search Bar">
+              <FiSearch size={20} color="white" />
             </button>
           </li>
+          {/* Products Link */}
           <li>
-            <Link
-              to="/product"
-              className={`${
-                location.pathname === "/product" ? "text-blue-500" : "text-white"
-              }`}
-              title="Products"
-            >
-              <FiBox size={20} />
+            <Link to="/product" title="Products">
+              <FiBox size={20} color="white" />
             </Link>
           </li>
+          {/* Wishlist Link */}
           <li>
-            <Link
-              to="/wishlist"
-              className={`${
-                location.pathname === "/wishlist" ? "text-red-500" : "text-white"
-              }`}
-              title="Wishlist"
-            >
-              <FiHeart size={20} />
+            <Link to="/wishlist" title="Wishlist">
+              <FiHeart size={20} color="white" />
             </Link>
           </li>
+          {/* Cart Link */}
           <li>
-            <Link
-              to="/cart"
-              className={`${
-                location.pathname === "/cart" ? "text-blue-500" : "text-white"
-              }`}
-              title="Cart"
-            >
-              <FiShoppingCart size={20} />
+            <Link to="/cart" title="Cart">
+              <FiShoppingCart size={20} color="white" />
             </Link>
           </li>
+          {/* Profile/Login Link */}
           <li>
-            <Link
-              to={isAuthenticated ? "/profile" : "/login"}
-              className={`${
-                location.pathname === (isAuthenticated ? "/profile" : "/login")
-                  ? "text-blue-500"
-                  : "text-white"
-              }`}
-              title="Profile"
-            >
-              <FiUser size={20} />
+            <Link to={isAuthenticated ? "/profile" : "/login"} title="Profile">
+              <FiUser size={20} color="white" />
             </Link>
           </li>
         </ul>
@@ -131,10 +115,7 @@ const Navbar: React.FC = () => {
 
       {/* Search Bar */}
       {isSearchVisible && (
-        <SearchBar
-          isVisible={isSearchVisible}
-          onClose={() => setIsSearchVisible(false)}
-        />
+        <SearchBar isVisible={isSearchVisible} onClose={() => setIsSearchVisible(false)} />
       )}
     </div>
   );
