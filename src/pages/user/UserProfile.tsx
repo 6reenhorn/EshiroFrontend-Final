@@ -12,14 +12,14 @@ const UserProfile: React.FC = () => {
     payment_method: "",
   });
   const [isEditing, setIsEditing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true); // Added loading state
+  const [loading, setLoading] = useState(true); 
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserProfile = async () => {
       const authToken = localStorage.getItem("authToken");
       if (!authToken) {
+        alert("Authentication token is missing. Redirecting to login page.");
         navigate("/login");
         return;
       }
@@ -43,12 +43,12 @@ const UserProfile: React.FC = () => {
       } catch (error) {
         console.error("Error fetching user profile:", error);
         if (error instanceof Error && (error as any).response && (error as any).response.status === 500) {
-          setError("A server error occurred. Please contact support.");
+          alert("A server error occurred. Please contact support.");
         } else {
-          setError("Failed to fetch user profile. Please ensure your profile is set up.");
+          alert("Failed to fetch user profile. Please ensure your profile is set up.");
         }
       } finally {
-        setLoading(false); // Set loading to false after data fetch
+        setLoading(false); 
       }
     };
 
@@ -63,6 +63,7 @@ const UserProfile: React.FC = () => {
   const handleSave = async () => {
     const authToken = localStorage.getItem("authToken");
     if (!authToken) {
+      alert("Authentication token is missing. Redirecting to login page.");
       navigate("/login");
       return;
     }
@@ -77,7 +78,7 @@ const UserProfile: React.FC = () => {
       setIsEditing(false);
     } catch (error) {
       console.error("Error saving user information:", error);
-      setError("Failed to update user information. Please try again.");
+      alert("Failed to update user information. Please try again.");
     }
   };
 
@@ -96,11 +97,6 @@ const UserProfile: React.FC = () => {
 
   return (
     <div className="min-h-screen flex bg-gradient-to-br from-gray-900 to-black font-inter">
-      {error && (
-        <div className="mb-4 p-4 bg-red-500 text-white rounded-lg">
-          {error}
-        </div>
-      )}
       <aside className="w-1/4 bg-gray-800 text-white flex flex-col">
         <div className="p-6 border-b border-gray-700 text-center">
           <h1 className="text-3xl font-bold">Profile</h1>
