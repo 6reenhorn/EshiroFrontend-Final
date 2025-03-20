@@ -16,21 +16,9 @@ import { fetchProducts } from "../api/services/apiService";
 import ProductDetails from "./product/ProductDetails"; 
 import { WishlistItem } from "../types/wishlistTypes";
 import { CartItem } from "../types/cartTypes";
+import { Product } from "../types/shop";
 
-// Product interface
-interface Product {
-  id: number;
-  category: string;
-  name: string;
-  description: string;
-  price: string;
-  stock: number;
-  image_url: string;
-  product_size: string;
-  created_at: string;
-}
-
-const AestheticShop: React.FC = () => {
+const HomePage: React.FC = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
@@ -54,7 +42,6 @@ const AestheticShop: React.FC = () => {
     getProducts();
   }, []);
 
-  // Handle Add to Wishlist
   const handleAddToWishlist = (item: Product) => {
     setWishlistItems((prevItems) => {
       if (!prevItems.find((wishlistItem) => wishlistItem.id === item.id)) {
@@ -169,4 +156,4 @@ const AestheticShop: React.FC = () => {
   );
 };
 
-export default AestheticShop;
+export default HomePage;

@@ -1,6 +1,6 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import AestheticShop from "../pages/AestheticShop";
+import AestheticShop from "../pages/HomePage";
 import ProductDetails from "../pages/product/ProductDetails";
 import CartPage from "../pages/cart/CartPage";
 import Wishlists from "../pages/cart/Wishlists";
