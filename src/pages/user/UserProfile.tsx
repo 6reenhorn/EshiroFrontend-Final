@@ -13,6 +13,7 @@ const UserProfile: React.FC = () => {
   });
   const [isEditing, setIsEditing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true); // Added loading state
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,7 +30,7 @@ const UserProfile: React.FC = () => {
             Authorization: `Token ${authToken}`,
           },
         });
-        
+
         if (response.status === 200) {
           setUserInfo({
             full_name: response.data.full_name || "N/A",
@@ -46,8 +47,10 @@ const UserProfile: React.FC = () => {
         } else {
           setError("Failed to fetch user profile. Please ensure your profile is set up.");
         }
+      } finally {
+        setLoading(false); // Set loading to false after data fetch
       }
-    };    
+    };
 
     fetchUserProfile();
   }, [navigate]);
@@ -65,11 +68,10 @@ const UserProfile: React.FC = () => {
     }
   
     try {
-      // Add the authorization header to the PUT request
       await api.put("/profile/", userInfo, {
         headers: {
-          Authorization: `Token ${authToken}`
-        }
+          Authorization: `Token ${authToken}`,
+        },
       });
       alert("User information updated successfully!");
       setIsEditing(false);
@@ -83,6 +85,14 @@ const UserProfile: React.FC = () => {
     localStorage.clear();
     navigate("/login");
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-black via-gray-900 to-gray-700">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex bg-gradient-to-br from-gray-900 to-black font-inter">
