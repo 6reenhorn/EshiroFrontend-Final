@@ -1,11 +1,78 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Heart, ShoppingCart } from "lucide-react";
-import { useProduct, useWishlist, useCart } from "@/hooks/useProductHooks";
+import { useProduct, useCart } from "@/hooks/useProductHooks";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
+import api from "../../api/services/axiosInstance";
 
 const ProductPage: React.FC = () => {
   const { products, loading } = useProduct();
-  const { wishlistStatus, handleAddToWishlist } = useWishlist();
   const { addedStatus, handleAddToCart } = useCart();
+  const [wishlistStatus, setWishlistStatus] = useState<{ [key: number]: boolean }>({});
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchWishlistStatus = async () => {
+      try {
+        const authToken = localStorage.getItem("authToken");
+        if (!authToken) return;
+
+        const response = await api.get("/wishlist/", {
+          headers: {
+            Authorization: `Token ${authToken}`,
+          },
+        });
+
+        if (response.data && Array.isArray(response.data)) {
+          const status = response.data.reduce((acc: any, item: any) => {
+            acc[item.product?.id || item.product] = true;
+            return acc;
+          }, {});
+          setWishlistStatus(status);
+        }
+      } catch (error) {
+        console.error("Error fetching wishlist status:", error);
+      }
+    };
+
+    fetchWishlistStatus();
+  }, []);
+
+  const handleAddToWishlist = async (product: any) => {
+    const authToken = localStorage.getItem("authToken");
+    if (!authToken) {
+      toast.error("Please log in to manage your wishlist", { theme: "dark" });
+      navigate("/login");
+      return;
+    }
+
+    try {
+      await api.post(
+        "/wishlist/",
+        { product: product.id },
+        {
+          headers: {
+            Authorization: `Token ${authToken}`,
+          },
+        }
+      );
+      setWishlistStatus((prevState) => ({
+        ...prevState,
+        [product.id]: true,
+      }));
+      toast.success(`${product.name} added to wishlist!`, { theme: "dark" });
+    } catch (error: any) {
+      console.error("Error adding to wishlist:", error);
+      if (error.response?.status === 401) {
+        toast.error("Your session has expired. Please log in again.", { theme: "dark" });
+        localStorage.removeItem("authToken");
+        navigate("/login");
+      } else {
+        toast.error("Failed to add item to wishlist.", { theme: "dark" });
+      }
+    }
+  };
 
   if (loading) {
     return <p className="text-center text-white">Loading products...</p>;
@@ -26,19 +93,20 @@ const ProductPage: React.FC = () => {
             <div className="absolute top-3 right-3">
               <button
                 className={`p-1 ${
-                  wishlistStatus[product.name]
+                  wishlistStatus[product.id]
                     ? "text-red-500"
                     : "text-gray-300"
                 } bg-gray-800 rounded-full hover:text-red-400`}
                 onClick={() => handleAddToWishlist(product)}
               >
-                <Heart size={18} />
+                <Heart size={18} fill={wishlistStatus[product.id] ? "currentColor" : "none"} />
               </button>
             </div>
             <img
               src={product.image_url}
               alt={product.name || "Product image"}
-              className="w-full h-40 object-cover rounded-xl mb-3"
+              className="w-full h-40 object-cover rounded-xl mb-3 cursor-pointer"
+              onClick={() => navigate(`/products/${product.id}`)} 
             />
             <div>
               <h2 className="font-semibold text-white">{product.name}</h2>
@@ -73,6 +141,8 @@ const ProductPage: React.FC = () => {
           </div>
         ))}
       </div>
+
+      <ToastContainer theme="dark" />
     </div>
   );
 };

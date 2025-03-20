@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Navbar from "../components/common/Navbar";
@@ -12,11 +12,10 @@ import CartPage from "./cart/CartPage";
 import UserProfile from "./user/UserProfile";
 import CheckoutPage from "./cart/CheckoutPage";
 import Wishlist from "./cart/Wishlists";
-import { fetchProducts } from "../api/services/apiService"; // Import API call function
-import ProductPage from "./product/ProductPage";
-import { WishlistItem } from "../types/wishlistTypes"; // Adjust the path accordingly
+import { fetchProducts } from "../api/services/apiService";
+import ProductDetails from "./product/ProductDetails"; 
+import { WishlistItem } from "../types/wishlistTypes";
 import { CartItem } from "../types/cartTypes";
-
 
 // Product interface
 interface Product {
@@ -31,23 +30,19 @@ interface Product {
   created_at: string;
 }
 
-
 const AestheticShop: React.FC = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate(); 
 
-
-
-
-  // Fetch products from backend
   useEffect(() => {
     const getProducts = async () => {
       try {
-        const data = await fetchProducts(); // Fetch data from API
-        setProducts(data); // Update state with fetched products
+        const data = await fetchProducts();
+        setProducts(data);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -67,17 +62,17 @@ const AestheticShop: React.FC = () => {
           ...prevItems,
           {
             id: item.id,
-            product: item.id, // Assuming `product` is the product ID
+            product: item.id,
             product_name: item.name,
             product_price: item.price,
             product_image: item.image_url,
-            store_name: "Default Store", // Change based on your data
+            store_name: "Default Store",
           },
         ];
       }
       return prevItems;
     });
-  };    
+  };
 
   return (
     <div className="bg-gradient-to-r from-black via-gray-900 to-gray-700 text-gray-100 min-h-screen flex flex-col">
@@ -113,14 +108,19 @@ const AestheticShop: React.FC = () => {
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-4 mt-4">
                     {products.map((product) => (
-                      <ProductCard
+                      <div
                         key={product.id}
-                        id={product.id}
-                        imageSrc={product.image_url}
-                        productName={product.name}
-                        price={product.price}
-                        onAddToWishlist={() => handleAddToWishlist(product)}
-                      />
+                        onClick={() => navigate(`/products/${product.id}`)} // Navigate to ProductDetails
+                        className="cursor-pointer"
+                      >
+                        <ProductCard
+                          id={product.id}
+                          imageSrc={product.image_url}
+                          productName={product.name}
+                          price={product.price}
+                          onAddToWishlist={() => handleAddToWishlist(product)}
+                        />
+                      </div>
                     ))}
                   </div>
                 )}
@@ -128,25 +128,43 @@ const AestheticShop: React.FC = () => {
             }
           />
           {/* Other Routes */}
-          <Route path="/shop" element={<AestheticShop />} />
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route
             path="/wishlist"
-            element={<Wishlist wishlistItems={wishlistItems} setWishlistItems={setWishlistItems} />}
+            element={
+              <Wishlist
+                wishlistItems={wishlistItems}
+                setWishlistItems={setWishlistItems}
+              />
+            }
           />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />
-          <Route path="/product" element={<ProductPage />} />
-          <Route path="/cart" element={<CartPage cartItems={cartItems} setCartItems={setCartItems} />} />
-          <Route path="/profile" element={<UserProfile />} />
+          <Route path="/products/:id" element={<ProductDetails />} 
+          /> 
+          <Route
+            path="/cart"
+            element={
+              <CartPage
+                cartItems={cartItems}
+                setCartItems={setCartItems}
+              />
+            }
+          />
+          <Route
+            path="/profile"
+            element={<UserProfile />}
+          />
           <Route
             path="*"
-            element={<div className="text-center text-gray-200 py-20">Page Not Found</div>}
+            element={
+              <div className="text-center text-gray-200 py-20">
+                Page Not Found
+              </div>
+            }
           />
         </Routes>
       </div>
-
-      {/* Footer */}
     </div>
   );
 };
