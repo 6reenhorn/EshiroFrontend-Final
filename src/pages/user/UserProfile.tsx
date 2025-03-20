@@ -104,7 +104,7 @@ const UserProfile: React.FC = () => {
           <p className="mt-2 text-gray-300">Thank you for choosing <span className="text-blue-400 font-semibold">Éshiro!</span></p>
         </div>
         <ul className="p-4 space-y-4">
-          <li onClick={() => setActiveTab("info")} className={`cursor-pointer p-3 rounded-lg text-lg font-medium text-center ${activeTab === "info" ? "bg-blue-600" : "hover:bg-gray-500"}`}>User Information</li>
+          <li onClick={() => setActiveTab("info")} className={`cursor-pointer p-3 rounded-lg text-lg font-medium text-center ${activeTab === "info" ? "bg-blue-600" : "hover:bg-gray-500"}`}>User Information ‎ ➤</li>
           <li onClick={handleLogout} className="cursor-pointer p-3 rounded-lg bg-red-600 mt-8 text-center font-semibold">Log Out</li>
         </ul>
       </aside>
