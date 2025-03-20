@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useCallback, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
-
-//nice
+import api from "../../api/services/axiosInstance"; // Import the axios instance
 
 interface Product {
   id: number;
@@ -33,27 +32,18 @@ const SearchBar: React.FC<SearchBarProps> = ({ isVisible, onClose }) => {
     setError(null);
 
     try {
-      const token = localStorage.getItem("token"); 
-
-      const response = await fetch(
-        `http://127.0.0.1:8000/api/search/?q=${searchTerm}`,
-        {
-          headers: {
-            Authorization: `Token ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (!response.ok) throw new Error("Failed to fetch products");
-      const data = await response.json();
+      // Using axios instance instead of fetch
+      const response = await api.get(`/search/?q=${searchTerm}`);
+      
+      // Axios automatically parses JSON
+      const data = response.data;
 
       // Ensure the response contains valid product data
       if (!Array.isArray(data)) throw new Error("Invalid data format from API");
 
       setProducts(data);
     } catch (err) {
-      setError((err as Error).message);
+      setError(err instanceof Error ? err.message : "An error occurred");
       setProducts([]); // Clear results on error
     } finally {
       setLoading(false);

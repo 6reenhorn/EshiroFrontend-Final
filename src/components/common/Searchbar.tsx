@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useCallback, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
-import api from "../../api/services/axiosInstance"; // Import the axios instance
+import api from "../../api/services/axiosInstance"; // Import axios instance
 
 interface Product {
   id: number;
@@ -21,6 +21,15 @@ const SearchBar: React.FC<SearchBarProps> = ({ isVisible, onClose }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Debounce function to optimize API calls
+  const debounce = (func: Function, delay: number) => {
+    let timeout: NodeJS.Timeout;
+    return (...args: any) => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func(...args), delay);
+    };
+  };
+
   // Fetch products dynamically based on search input
   const fetchProducts = async (searchTerm: string) => {
     if (searchTerm.length < 2) {
@@ -32,16 +41,13 @@ const SearchBar: React.FC<SearchBarProps> = ({ isVisible, onClose }) => {
     setError(null);
 
     try {
-      // Using axios instance instead of fetch
+      // Using axios instance for API call
       const response = await api.get(`/search/?q=${searchTerm}`);
-      
-      // Axios automatically parses JSON
       const data = response.data;
 
-      // Ensure the response contains valid product data
       if (!Array.isArray(data)) throw new Error("Invalid data format from API");
 
-      setProducts(data);
+      setProducts(data); // Update the products state
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
       setProducts([]); // Clear results on error
@@ -50,14 +56,14 @@ const SearchBar: React.FC<SearchBarProps> = ({ isVisible, onClose }) => {
     }
   };
 
-  // Handle search input change
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Debounced version of fetchProducts
+  const handleSearchChange = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setQuery(value);
     fetchProducts(value);
-  };
+  }, 300); // 300ms debounce delay
 
-  // Handle clicking outside to close search
+  // Handle clicking outside the search bar to close it
   const handleClickOutside = useCallback(
     (event: MouseEvent) => {
       if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
@@ -67,6 +73,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ isVisible, onClose }) => {
     [onClose]
   );
 
+  // Add and remove event listener based on visibility
   useEffect(() => {
     if (isVisible) {
       document.addEventListener("mousedown", handleClickOutside);
