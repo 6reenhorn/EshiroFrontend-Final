@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "../../api/services/axiosInstance";
+import { useNavigate } from "react-router-dom";
 
 interface OrderItem {
   product_name: string;
@@ -29,6 +30,7 @@ const TransactionPage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchOrderHistory = async () => {
@@ -108,7 +110,7 @@ const TransactionPage = () => {
             <p className="text-gray-400 text-xl">You haven't placed any orders yet.</p>
             <button 
               className="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg transition"
-              onClick={() => window.location.href = '/product'}
+              onClick={() => navigate('/product')}
             >
               Browse Products
             </button>
