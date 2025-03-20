@@ -63,9 +63,14 @@ const UserProfile: React.FC = () => {
       navigate("/login");
       return;
     }
-
+  
     try {
-      await api.put("/profile/", userInfo);
+      // Add the authorization header to the PUT request
+      await api.put("/profile/", userInfo, {
+        headers: {
+          Authorization: `Token ${authToken}`
+        }
+      });
       alert("User information updated successfully!");
       setIsEditing(false);
     } catch (error) {
