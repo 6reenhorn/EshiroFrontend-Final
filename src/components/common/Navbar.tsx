@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Header from "./Header";
-import { FiSearch, FiHeart, FiUser, FiBox, FiShoppingCart } from "react-icons/fi";
+import { FiSearch, FiHeart, FiUser, FiBox, FiShoppingCart, FiFileText } from "react-icons/fi";
 import { Link, useLocation } from "react-router-dom";
 import SearchBar from "./Searchbar";
 
@@ -72,9 +72,7 @@ const Navbar: React.FC = () => {
           <li>
             <button
               onClick={() => setIsSearchVisible(true)}
-              className={`${
-                isSearchVisible ? "text-white" : "text-white"
-              }`}
+              className="text-white"
               aria-label="Open Search Bar"
             >
               <FiSearch size={20} />
@@ -113,6 +111,20 @@ const Navbar: React.FC = () => {
               <FiShoppingCart size={20} />
             </Link>
           </li>
+
+          {/* Transaction History Icon */}
+          <li>
+            <Link
+              to="/history"
+              className={`${
+                location.pathname === "/history" ? "text-yellow-500" : "text-white"
+              }`}
+              title="Transaction History"
+            >
+              <FiFileText size={20} />
+            </Link>
+          </li>
+
           <li>
             <Link
               to={isAuthenticated ? "/profile" : "/login"}
