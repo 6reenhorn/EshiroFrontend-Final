@@ -12,7 +12,7 @@ const api = axios.create({
 // Add an interceptor to include the Authorization token in headers
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token"); // Retrieve token from localStorage
+    const token = localStorage.getItem("authToken"); // Retrieve token from localStorage
     if (token) {
       config.headers.Authorization = `Token ${token}`; // Attach token to the Authorization header
     }
