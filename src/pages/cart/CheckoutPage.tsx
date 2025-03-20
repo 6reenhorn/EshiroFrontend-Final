@@ -111,24 +111,7 @@ const CheckoutPage: React.FC = () => {
     }
   
     setShowConfirmationModal(true); // Show the confirmation modal
-  };
-
-  const confirmOrder = async () => {
-    try {
-      const authToken = localStorage.getItem("authToken");
-      if (!authToken) throw new Error("Authentication required.");
-  
-      const headers = { headers: { Authorization: `Token ${authToken}` } };
-      await api.post(`/orders/${orderId}/confirm/`, { payment_method: paymentMethod }, headers);
-  
-      setOrderStatusMessage("Order Complete");
-    } catch (error) {
-      console.error("Order confirmation failed:", error);
-      setOrderStatusMessage("Order Failed. Please try again.");
-    } finally {
-      setShowConfirmationModal(false);
-    }
-  };  
+  }; 
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 flex flex-col items-center text-white px-6">
@@ -231,7 +214,14 @@ const CheckoutPage: React.FC = () => {
             </div>
 
             <div className="flex justify-around mt-6">
-              <button onClick={confirmOrder} className="bg-green-500 text-white py-2 px-4 rounded-lg">
+              <button
+                onClick={async () => {
+                  setShowConfirmationModal(false);
+                  setOrderStatusMessage("Order Complete");
+                  // You can still add your backend call here if you want after confirmation
+                }}
+                className="bg-green-500 text-white py-2 px-4 rounded-lg"
+              >
                 Yes
               </button>
               <button
