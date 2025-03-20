@@ -84,6 +84,14 @@ const TransactionPage = () => {
     });
   };
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-black via-gray-900 to-gray-700">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-white">
       <div className="container mx-auto px-4 py-16">
@@ -91,11 +99,7 @@ const TransactionPage = () => {
           <h1>Transaction History</h1>
         </div>
         
-        {loading ? (
-          <div className="flex justify-center items-center h-40">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
-          </div>
-        ) : error ? (
+        {error ? (
           <div className="bg-red-900 bg-opacity-20 border border-red-700 text-red-300 px-4 py-3 rounded-lg text-center">
             {error}
           </div>

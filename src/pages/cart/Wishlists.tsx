@@ -88,13 +88,19 @@ const Wishlist: React.FC<WishlistProps> = ({ wishlistItems, setWishlistItems }) 
     }
   };
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-black via-gray-900 to-gray-700">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-r from-black via-gray-900 to-gray-700 flex justify-center items-center p-8">
       <div className="w-full max-w-4xl bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 shadow-lg rounded-lg p-6">
         <h2 className="text-3xl font-semibold text-center text-gray-100 mb-6">Your Wishlist</h2>
-        {loading ? (
-          <p className="text-center text-gray-300">Loading wishlist...</p>
-        ) : error ? (
+        {error ? (
           <p className="text-center text-red-500">{error}</p>
         ) : (
           <>

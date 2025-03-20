@@ -141,13 +141,19 @@ const CartPage: React.FC<CartPageProps> = ({ cartItems, setCartItems }) => {
     return item ? acc + parseFloat(item.product_price) * item.quantity : acc;
   }, 0);
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-black via-gray-900 to-gray-700">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 flex flex-col items-center text-white px-6">
       <h1 className="text-4xl font-bold mt-16 mb-10 text-gray-200">🛒 Your Shopping Cart</h1>
 
-      {loading ? (
-        <p className="text-gray-400 text-lg">Loading cart...</p>
-      ) : error ? (
+      {error ? (
         <p className="text-red-400 text-lg">{error}</p>
       ) : (
         <div className="w-full max-w-[100rem] flex gap-12">

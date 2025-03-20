@@ -36,7 +36,14 @@ const ProductDetails = () => {
     fetchProduct();
   }, [id]);
 
-  if (loading) return <p className="text-center text-white">Loading...</p>;
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-black via-gray-900 to-gray-700">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+      </div>
+    );
+  }
+  
   if (error) return <p className="text-center text-red-500">Error: {error}</p>;
   if (!product) return <p className="text-center text-white">No product found.</p>;
 
