@@ -92,7 +92,7 @@ const ProductPage: React.FC = () => {
         {products.map((product) => (
           <div
             key={product.id}
-            className="relative bg-gray-900 border border-gray-700 rounded-2xl p-4"
+            className="relative bg-gray-900 border border-gray-700 rounded-2xl p-4 flex flex-col h-full justify-between"
           >
             <div className="absolute top-3 right-3">
               <button
