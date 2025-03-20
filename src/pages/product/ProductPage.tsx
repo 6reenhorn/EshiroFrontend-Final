@@ -105,7 +105,8 @@ const ProductPage: React.FC = () => {
             <img
               src={product.image_url}
               alt={product.name || "Product image"}
-              className="w-full h-40 object-cover rounded-xl mb-3"
+              className="w-full h-40 object-cover rounded-xl mb-3 cursor-pointer"
+              onClick={() => navigate(`/products/${product.id}`)} 
             />
             <div>
               <h2 className="font-semibold text-white">{product.name}</h2>
@@ -141,7 +142,6 @@ const ProductPage: React.FC = () => {
         ))}
       </div>
 
-      {/* Global toast container with dark theme */}
       <ToastContainer theme="dark" />
     </div>
   );

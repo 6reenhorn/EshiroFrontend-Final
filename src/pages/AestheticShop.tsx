@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Navbar from "../components/common/Navbar";
@@ -13,7 +13,7 @@ import UserProfile from "./user/UserProfile";
 import CheckoutPage from "./cart/CheckoutPage";
 import Wishlist from "./cart/Wishlists";
 import { fetchProducts } from "../api/services/apiService";
-import ProductPage from "./product/ProductPage";
+import ProductDetails from "./product/ProductDetails"; 
 import { WishlistItem } from "../types/wishlistTypes";
 import { CartItem } from "../types/cartTypes";
 
@@ -36,8 +36,8 @@ const AestheticShop: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate(); 
 
-  // Fetch products from backend
   useEffect(() => {
     const getProducts = async () => {
       try {
@@ -108,14 +108,19 @@ const AestheticShop: React.FC = () => {
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-4 mt-4">
                     {products.map((product) => (
-                      <ProductCard
+                      <div
                         key={product.id}
-                        id={product.id}
-                        imageSrc={product.image_url}
-                        productName={product.name}
-                        price={product.price}
-                        onAddToWishlist={() => handleAddToWishlist(product)}
-                      />
+                        onClick={() => navigate(`/products/${product.id}`)} // Navigate to ProductDetails
+                        className="cursor-pointer"
+                      >
+                        <ProductCard
+                          id={product.id}
+                          imageSrc={product.image_url}
+                          productName={product.name}
+                          price={product.price}
+                          onAddToWishlist={() => handleAddToWishlist(product)}
+                        />
+                      </div>
                     ))}
                   </div>
                 )}
@@ -123,7 +128,6 @@ const AestheticShop: React.FC = () => {
             }
           />
           {/* Other Routes */}
-          <Route path="/shop" element={<AestheticShop />} />
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route
             path="/wishlist"
@@ -136,7 +140,8 @@ const AestheticShop: React.FC = () => {
           />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />
-          <Route path="/product" element={<ProductPage />} />
+          <Route path="/products/:id" element={<ProductDetails />} 
+          /> 
           <Route
             path="/cart"
             element={
