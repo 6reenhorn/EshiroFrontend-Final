@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import { Heart } from "lucide-react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import api from "../api/services/axiosInstance";
-
+import api from "../api/services/axiosInstance"; 
 interface Product {
   id: number;
   category: string;
@@ -69,7 +68,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
       if (error.response?.status === 401) {
         toast.error("Your session has expired. Please log in again.");
-        localStorage.removeItem("authToken"); // Corrected the key to match the actual token's key
+        localStorage.removeItem("token"); 
         navigate("/login");
       } else {
         toast.error("Failed to add item to wishlist.");
@@ -86,9 +85,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       {/* Wishlist & Swap Buttons */}
       <div className="absolute top-3 right-3 flex space-x-2">
         <button
-          className={`p-1 ${
-            isWishlisted ? "text-red-500" : "text-gray-300"
-          } bg-gray-800 rounded-full hover:text-red-400`}
+          className={`p-1 ${isWishlisted ? "text-red-500" : "text-gray-300"} bg-gray-800 rounded-full hover:text-red-400`}
           onClick={handleAddToWishlist}
         >
           <Heart size={18} />
