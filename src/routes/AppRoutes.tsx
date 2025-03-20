@@ -12,6 +12,7 @@ import WhatsNew from "../pages/product/WhatsNew";
 import CheckoutPage from "../pages/cart/CheckoutPage";
 import type { CartItem } from "../types/cartTypes";
 import type { WishlistItem } from "../types/wishlistTypes";
+import TransactionPage from "../pages/Transaction/TransactionPage";
 
 interface AppRoutesProps {
   cartItems: CartItem[];
@@ -38,6 +39,7 @@ const AppRoutes: React.FC<AppRoutesProps> = ({
       <Route path="/profile" element={<UserProfile />} />
       <Route path="/whats-new" element={<WhatsNew />} />
       <Route path="/checkout" element={<CheckoutPage />} />
+      <Route path="/history" element={<TransactionPage />} />
     </Routes>
   );
 };
