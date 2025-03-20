@@ -26,20 +26,26 @@ const UserProfile: React.FC = () => {
       try {
         const response = await api.get("/profile/", {
           headers: {
-            Authorization: `Token ${authToken}`,  // Ensure token is sent
+            Authorization: `Token ${authToken}`,
           },
         });
-    
-        setUserInfo({
-          full_name: response.data.full_name || "N/A",
-          complete_address: response.data.complete_address || "N/A",
-          email: response.data.email || "N/A",
-          cellphone_number: response.data.cellphone_number || "N/A",
-          payment_method: response.data.payment_method || "N/A",
-        });
+        
+        if (response.status === 200) {
+          setUserInfo({
+            full_name: response.data.full_name || "N/A",
+            complete_address: response.data.complete_address || "N/A",
+            email: response.data.email || "N/A",
+            cellphone_number: response.data.cellphone_number || "N/A",
+            payment_method: response.data.payment_method || "N/A",
+          });
+        }
       } catch (error) {
         console.error("Error fetching user profile:", error);
-        setError("Failed to fetch user profile. Please ensure your profile is set up.");
+        if (error instanceof Error && (error as any).response && (error as any).response.status === 500) {
+          setError("A server error occurred. Please contact support.");
+        } else {
+          setError("Failed to fetch user profile. Please ensure your profile is set up.");
+        }
       }
     };    
 
