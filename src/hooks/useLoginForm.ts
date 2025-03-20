@@ -12,7 +12,7 @@ export const useLoginForm = () => {
   
   const navigate = useNavigate();
   const { useMutationLogin } = useMutationAuth();
-  const { mutate } = useMutationLogin();
+  const { mutate, isError, error } = useMutationLogin();
 
   useEffect(() => {
     const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
@@ -20,13 +20,22 @@ export const useLoginForm = () => {
       navigate("/");
     }
   }, [navigate]);
-  
-  // Handle input changes
+
+  useEffect(() => {
+    if (isError && error) {
+      setFormState(prev => ({ 
+        ...prev, 
+        error: "Login failed. Please check your credentials."
+      }));
+    }
+  }, [isError, error]);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setFormState(prev => ({
       ...prev,
-      [id]: value
+      [id]: value,
+      error: null 
     }));
   };
 
@@ -41,7 +50,24 @@ export const useLoginForm = () => {
       return;
     }
 
-    mutate({ username, password });
+    try {
+      mutate(
+        { username, password },
+        {
+          onError: () => {
+            setFormState(prev => ({ 
+              ...prev, 
+              error: "Login failed. Please check your credentials."
+            }));
+          }
+        }
+      );
+    } catch (err: any) {
+      setFormState(prev => ({ 
+        ...prev, 
+        error: "Login failed. Please check your credentials." 
+      }));
+    }
   };
   
   return {
