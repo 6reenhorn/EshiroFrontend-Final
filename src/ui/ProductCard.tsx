@@ -48,7 +48,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
     };
 
     try {
-      const authToken = localStorage.getItem("token");
+      const authToken = localStorage.getItem("authToken");
 
       await api.post(
         "/wishlist/",
