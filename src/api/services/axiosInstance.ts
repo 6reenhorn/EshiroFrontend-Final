@@ -34,7 +34,7 @@ export const login = async (email: string, password: string) => {
 
     // Save the token and user_id to localStorage if present
     if (token && user_id) {
-      localStorage.setItem("token", token); // Save the token
+      localStorage.setItem("authToken", token); // Save the token
       localStorage.setItem("user_id", user_id.toString()); // Save the user_id as a string
       console.log("Authentication successful. Token:", token, "User ID:", user_id);
     } else {
