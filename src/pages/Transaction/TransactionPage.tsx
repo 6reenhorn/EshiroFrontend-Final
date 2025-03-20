@@ -108,7 +108,7 @@ const TransactionPage = () => {
             <p className="text-gray-400 text-xl">You haven't placed any orders yet.</p>
             <button 
               className="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg transition"
-              onClick={() => window.location.href = '/products'}
+              onClick={() => window.location.href = '/product'}
             >
               Browse Products
             </button>
