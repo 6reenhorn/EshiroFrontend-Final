@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import api from "../../api/services/axiosInstance"; // Import the axios instance
 
 interface Product {
   id: number;
@@ -23,12 +24,10 @@ const ProductDetails = () => {
 
     const fetchProduct = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/api/products/${id}/`);
-        if (!response.ok) throw new Error("Product not found");
-        const data = await response.json();
-        setProduct(data);
-      } catch (err) {
-        setError((err as Error).message);
+        const response = await api.get(`/products/${id}/`);
+        setProduct(response.data);
+      } catch (err: any) {
+        setError(err.response?.data?.detail || "Product not found");
       } finally {
         setLoading(false);
       }
