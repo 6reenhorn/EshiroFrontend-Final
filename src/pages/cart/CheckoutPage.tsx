@@ -56,32 +56,30 @@ const CheckoutPage: React.FC = () => {
   
     const fetchData = async () => {
       try {
-        const authToken = localStorage.getItem("authToken"); // Retrieve token
-  
-        if (!authToken) {
-          throw new Error("Missing authentication token. Please log in again.");
-        }
+        const authToken = localStorage.getItem("authToken");
+        if (!authToken) throw new Error("Authentication required.");
   
         const headers = {
-          headers: {
-            Authorization: `Token ${authToken}`, // Include the token
-          },
+          headers: { Authorization: `Token ${authToken}` },
         };
   
-        // Fetch User Data
+        // Fetch User Data (Including Payment Method)
         const userResponse = await api.get("/profile/", headers);
         setUser(userResponse.data);
   
+        // **Auto-fill Payment Method if Available**
+        if (userResponse.data.payment_method) {
+          setPaymentMethod(userResponse.data.payment_method);
+        }
+  
         // Fetch Order Items
         const orderResponse = await api.get(`/order-items/${orderId}/`, headers);
-        console.log("Order Items:", orderResponse.data);
-  
         setOrderItems(
           orderResponse.data.map((item: APIOrderItem) => ({
             id: item.id,
-            productName: item.product_name, // ✅ Correct API key
+            productName: item.product_name,
             price: item.price,
-            image_Url: item.image, // ✅ Matches `OrderItem`
+            image_Url: item.image,
             quantity: item.quantity,
           }))
         );
@@ -104,7 +102,7 @@ const CheckoutPage: React.FC = () => {
     };
   
     fetchData();
-  }, [orderId]);  
+  }, [orderId]);
 
   const handlePlaceOrder = () => {
     if (!paymentMethod) {
@@ -114,6 +112,23 @@ const CheckoutPage: React.FC = () => {
   
     setShowConfirmationModal(true); // Show the confirmation modal
   };
+
+  const confirmOrder = async () => {
+    try {
+      const authToken = localStorage.getItem("authToken");
+      if (!authToken) throw new Error("Authentication required.");
+  
+      const headers = { headers: { Authorization: `Token ${authToken}` } };
+      await api.post(`/orders/${orderId}/confirm/`, { payment_method: paymentMethod }, headers);
+  
+      setOrderStatusMessage("Order Complete");
+    } catch (error) {
+      console.error("Order confirmation failed:", error);
+      setOrderStatusMessage("Order Failed. Please try again.");
+    } finally {
+      setShowConfirmationModal(false);
+    }
+  };  
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 flex flex-col items-center text-white px-6">
@@ -183,10 +198,10 @@ const CheckoutPage: React.FC = () => {
             <h3 className="text-xl font-semibold text-gray-200 mb-3">Payment Method</h3>
             <input
               type="text"
-              className="w-full p-3 text-gray-800 bg-gray-200 rounded-lg focus:outline-none focus:ring focus:ring-indigo-500"
+              className="w-full p-3 text-gray-800 bg-gray-300 rounded-lg focus:outline-none cursor-not-allowed"
               placeholder="Enter payment method (e.g., Credit Card, PayPal, Bank Transfer)"
               value={paymentMethod}
-              onChange={(e) => setPaymentMethod(e.target.value)}
+              disabled
             />
           </div>
   
@@ -216,14 +231,7 @@ const CheckoutPage: React.FC = () => {
             </div>
 
             <div className="flex justify-around mt-6">
-              <button
-                onClick={async () => {
-                  setShowConfirmationModal(false);
-                  setOrderStatusMessage("Order Complete");
-                  // You can still add your backend call here if you want after confirmation
-                }}
-                className="bg-green-500 text-white py-2 px-4 rounded-lg"
-              >
+              <button onClick={confirmOrder} className="bg-green-500 text-white py-2 px-4 rounded-lg">
                 Yes
               </button>
               <button
