@@ -7,7 +7,7 @@ const useMutationAuth = () => {
 
   const useMutationLogin = () => {
     return useMutation({
-      mutationFn: ({ username, password }: { username: string; password: string }) => login(username, password),
+      mutationFn: ({ email, password }: { email: string; password: string }) => login(email, password),
       onSuccess: (response: any) => {
         console.log("API Response:", response); // Debugging
       

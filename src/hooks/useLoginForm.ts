@@ -56,7 +56,7 @@ export const useLoginForm = () => {
 
     try {
       mutate(
-        { username, password },
+        { email: username, password },
         {
           onError: () => {
             setFormState(prev => ({ 

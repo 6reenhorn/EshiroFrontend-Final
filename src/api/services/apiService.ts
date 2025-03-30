@@ -31,9 +31,36 @@ export const fetchWishlistItems = async (userId: number) => {
 };
 
 // User Login
-export const login = async (username: string, password: string) => {
-  const response = await axiosInstance.post("/login/", { username, password });
-  return response.data; // ✅ Return full API response
+export const login = async (email: string, password: string) => {
+  try {
+    // Try this format first - standard Django auth often uses this
+    const response = await axiosInstance.post("/login/", {
+      username: email,
+      password: password
+    });
+    
+    console.log("Login successful with username/password format");
+    return response.data;
+  } catch (error) {
+    console.error("Login with username format failed:", error);
+    
+    try {
+      // If that fails, try with email field explicitly
+      const response = await axiosInstance.post("/login/", {
+        email: email,
+        password: password
+      });
+      
+      console.log("Login successful with email/password format");
+      return response.data;
+    } catch (secondError) {
+      console.error("Login with email format failed:", secondError);
+      
+      // If that also fails, log both errors for debugging and rethrow
+      console.error("All login attempts failed");
+      throw secondError;
+    }
+  }
 };
 
 // User Signup

@@ -27,7 +27,7 @@ api.interceptors.request.use(
 export const login = async (email: string, password: string) => {
   try {
     // Send a POST request to the login endpoint
-    const response = await api.post("/login/", { username: email, password });
+    const response = await api.post("/login/", { email: email, password });
 
     // Extract token and user_id from the response
     const { token, user_id } = response.data;
