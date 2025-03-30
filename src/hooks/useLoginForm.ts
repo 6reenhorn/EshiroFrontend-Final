@@ -9,7 +9,8 @@ export const useLoginForm = () => {
     password: "",
     error: null
   });
-  
+  const [isSubmitting, setIsSubmitting] = useState(false); // New state
+
   const navigate = useNavigate();
   const { useMutationLogin } = useMutationAuth();
   const { mutate, isError, error } = useMutationLogin();
@@ -27,6 +28,7 @@ export const useLoginForm = () => {
         ...prev, 
         error: "Login failed. Please check your credentials."
       }));
+      setIsSubmitting(false); // Re-enable the button on error
     }
   }, [isError, error]);
 
@@ -42,11 +44,13 @@ export const useLoginForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormState(prev => ({ ...prev, error: null }));
+    setIsSubmitting(true); // Disable the button
     
     const { username, password } = formState;
     
     if (!username || !password) {
       setFormState(prev => ({ ...prev, error: "Please enter both username and password" }));
+      setIsSubmitting(false); // Re-enable the button
       return;
     }
 
@@ -59,6 +63,10 @@ export const useLoginForm = () => {
               ...prev, 
               error: "Login failed. Please check your credentials."
             }));
+            setIsSubmitting(false); // Re-enable the button on error
+          },
+          onSuccess: () => {
+            setIsSubmitting(false); // Re-enable the button on success (optional)
           }
         }
       );
@@ -67,11 +75,13 @@ export const useLoginForm = () => {
         ...prev, 
         error: "Login failed. Please check your credentials." 
       }));
+      setIsSubmitting(false); // Re-enable the button on error
     }
   };
   
   return {
     formState,
+    isSubmitting, // Return the state
     handleInputChange,
     handleSubmit
   };

@@ -4,7 +4,7 @@ import { useLoginForm } from "../../hooks/useLoginForm";
 import "@/index.css";
 
 const LoginPage: React.FC = () => {
-  const { formState, handleInputChange, handleSubmit } = useLoginForm();
+  const { formState, isSubmitting, handleInputChange, handleSubmit } = useLoginForm(); // Destructure isSubmitting
   const { username, password, error } = formState;
   const navigate = useNavigate();
   
@@ -86,8 +86,9 @@ const LoginPage: React.FC = () => {
               (e.target as HTMLButtonElement).style.transform = "scale(1)";
               (e.target as HTMLButtonElement).style.boxShadow = "0px 4px 10px rgba(0, 0, 0, 0.2)";
             }}
+            disabled={isSubmitting} // Disable the button when submitting
           >
-            Log In
+            {isSubmitting ? "Logging In..." : "Log In"} {/* Change button text */}
           </button>
         </form>
         <div className="mt-4 text-center">
