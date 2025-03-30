@@ -8,12 +8,9 @@ Eshiro Flex is an online e-commerce platform specializing in footwear. This repo
 
 ## My Contributions
 
-- Fixed critical bugs affecting the shopping experience
+- Fixed critical bugs affecting the website functionality
 - Resolved deployment errors that prevented the site from functioning properly
-- Optimized frontend components for better performance
-- Enhanced user authentication flows
 - Improved product catalog and transaction processing
-- Implemented responsive design fixes
 
 ## Project Structure
 
